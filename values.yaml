@@ -64,11 +64,8 @@ persistence:
 troubleshoot:
   support-bundles:
     replicated:
-      # -- Enables or disables the support bundle
       enabled: true
-      # -- Default spec to install
       uri: https://raw.githubusercontent.com/replicatedhq/troubleshoot-specs/main/in-cluster/default.yaml
-      # -- Add custom support bundles here
     minecraft:
       enabled: true
       collectors:
