@@ -1,0 +1,102 @@
+global:
+  labels: {}
+  annotations: {}
+minecraft:
+  seats: 100
+  tls:
+    enabled: false
+    hostname: minecraft.annarchy.net
+    subjectAlternativeNames: []
+apps:
+  minecraft:
+    enabled: true
+    type: deployment
+    replicas: 1
+    containers:
+      minecraft:
+        env:
+          EULA: "TRUE"
+        image:
+          repository: itzg/minecraft-server
+          tag: latest
+        volumeMounts:
+          - mountPath: /data
+            name: minecraft
+    volumes:
+      - name: minecraft
+        persistentVolumeClaim:
+          claimName: minecraft
+services:
+  minecraft:
+    enabled: true
+    appName:
+      - minecraft
+    type: NodePort
+    ports:
+      minecraft:
+        enabled: true
+        port: 25565
+        protocol: TCP
+        targetPort: 25565
+ingresses:
+  minecraft:
+    enabled: false
+    serviceName: minecraft
+    hosts:
+      - host: minecraft.annarchy.net
+        paths:
+          - path: /
+            pathType: Prefix
+            service:
+              port: 25565
+persistence:
+  minecraft:
+    enabled: true
+    type: persistentVolumeClaim
+    persistentVolumeClaim:
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 50Gi
+
+troubleshoot:
+  support-bundles:
+    replicated:
+      # -- Enables or disables the support bundle
+      enabled: true
+      # -- Default spec to install
+      uri: https://raw.githubusercontent.com/replicatedhq/troubleshoot-specs/main/in-cluster/default.yaml
+      # -- Add custom support bundles here
+    minecraft:
+      enabled: true
+      collectors:
+        - logs:
+            name: minecraft
+            appName: minecraft
+  preflights:
+    # -- Add custom support preflight spec here
+    minecraft:
+      # -- Specify the replicated preflight image for the container
+      image: replicated/preflight:latest
+      # -- Enables or disables the preflight
+      enabled: true
+      # -- Enable or disable the creation of RBAC roles to run the preflight
+      enableRBAC: false
+      # -- Add collectors and analyzers here
+      collectors:
+        - run:
+            collectorName: "static-hi"
+            image: "alpine:3"
+            command: ["echo", "hi static!"]
+      analyzers:
+        - textAnalyze:
+            checkName: Said hi!
+            fileName: /static-hi.log
+            regex: "hi static"
+            outcomes:
+              - fail:
+                  message: Didn't say hi.
+              - pass:
+                  message: Said hi!

@@ -1,0 +1,16 @@
+apiVersion: v2
+name: minecraft
+description: A Helm chart for itzg/minecraft-server
+type: application
+version: 0.3.0
+appVersion: "1.0.0"
+dependencies:
+- name: replicated
+  repository: oci://registry.replicated.com/library
+  version: 0.0.1-alpha.19
+- name: replicated-library
+  repository: https://replicatedhq.github.io/helm-charts
+  # repository: file://../replicated-library-chart/charts/replicated-library
+  version: 0.13.5
+home: https://github.com/adamancini/helm-minecraft-server
+kubeVersion: ">=1.21.0-0"
