@@ -11,6 +11,6 @@ dependencies:
 - name: replicated-library
   repository: https://replicatedhq.github.io/helm-charts
   # repository: file://../replicated-library-chart/charts/replicated-library
-  version: 0.13.6
+  version: 0.13.11
 home: https://github.com/adamancini/helm-minecraft-server
 kubeVersion: ">=1.21.0-0"
